@@ -1,6 +1,7 @@
-// timeofday.hpp  UNFINISHED
+// timeofday.hpp
 // Glenn G. Chappell
-// 2023-09-01
+// Started: 2023-09-01
+// Updated: 2023-09-06
 //
 // For CS 311 Fall 2023
 // Header for class TimeOfDay
@@ -11,6 +12,8 @@
 
 #include <ostream>
 // For std::ostream
+#include <cassert>
+// For assert
 
 
 // *********************************************************************
@@ -22,14 +25,21 @@
 // Time of day: hours, minutes, seconds.
 class TimeOfDay {
 
+// ***** TimeOfDay: Friend declarations *****
+
+    friend
+    std::ostream & operator<<(std::ostream & str,
+                              const TimeOfDay & obj);
+
 // ***** TimeOfDay: Ctors, dctor, op= *****
 public:
 
     // Default ctor
     // Set time to midnight.
     TimeOfDay()
-        :_secs(0)
-    {}
+    {
+        setTime(0, 0, 0);
+    }
 
     // Ctor from hours, minutes, seconds
     // Set time to given # of hours, minutes, seconds past midnight.
@@ -37,8 +47,15 @@ public:
               int mm,
               int ss)
     {
-        // TODO: WRITE THIS!!!
+        assert(0 <= hh && hh < 24);
+        assert(0 <= mm && mm < 60);
+        assert(0 <= ss && ss < 60);
+
+        setTime(hh, mm, ss);
     }
+
+    // We use the automatically generated destructor and copy/move
+    // operations.
 
 // ***** TimeOfDay: General public operators *****
 public:
@@ -47,6 +64,8 @@ public:
     // Move time one second forward.
     TimeOfDay & operator++()
     {
+        assert(0 <= _secs && _secs < 24*60*60);
+
         ++_secs;
         _secs %= 24*60*60;
         return *this;
@@ -56,6 +75,8 @@ public:
     // Move time one second forward.
     TimeOfDay operator++([[maybe_unused]] int dummy)
     {
+        assert(0 <= _secs && _secs < 24*60*60);
+
         auto save = *this;
         ++(*this);
         return save;
@@ -65,6 +86,8 @@ public:
     // Move time one second backward.
     TimeOfDay & operator--()
     {
+        assert(0 <= _secs && _secs < 24*60*60);
+
         --_secs;
         if (_secs == -1)
             _secs = 24*60*60-1;
@@ -75,6 +98,8 @@ public:
     // Move time one second backward.
     TimeOfDay operator--([[maybe_unused]] int dummy)
     {
+        assert(0 <= _secs && _secs < 24*60*60);
+
         auto save = *this;
         --(*this);
         return save;
@@ -85,21 +110,17 @@ public:
 
     // getTime
     // Return hours, minutes, seconds in reference parameters.
+    // Function defined in source file.
     void getTime(int & hh,
                  int & mm,
-                 int & ss) const
-    {
-        // TODO: WRITE THIS!!!
-    }
+                 int & ss) const;
 
     // setTime
     // Set time to given # of hours, minutes, seconds past midnight.
+    // Function defined in source file.
     void setTime(int hh,
                  int mm,
-                 int ss)
-    {
-        // TODO: WRITE THIS!!!
-    }
+                 int ss);
 
 // ***** TimeOfDay: Data members *****
 private:
@@ -118,8 +139,8 @@ private:
 // Prints given TimeOfDay object as "hh:mm:ss", with hh padded on the
 // left with blanks, and mm, ss padded on the left with zeroes.
 // Function defined in source file.
-std::ostream & operator<<(std::ostream & out,
-                          const TimeOfDay & t);
+std::ostream & operator<<(std::ostream & str,
+                          const TimeOfDay & obj);
 
 
 #endif  //#ifndef FILE_TIMEOFDAY_HPP_INCLUDED
