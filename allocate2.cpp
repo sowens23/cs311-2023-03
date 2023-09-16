@@ -1,6 +1,7 @@
-// allocate2.cpp  UNFINISHED
+// allocate2.cpp
 // Glenn G. Chappell
-// 2022-09-14
+// Started: 2022-09-14
+// Updated: 2022-09-15
 //
 // For CS 311 Fall 2023
 // Out-of-memory handling using exceptions
@@ -97,9 +98,21 @@ private:
 void allocate2(Named * & nptra,
                Named * & nptrb)
 {
-    // THIS MIGHT BE WRONG. TODO: WRITE THIS FUNCTION CORRECTLY!!!
     nptra = new Named("Object A");
-    nptrb = new Named("Object B");
+    // If the 1st allocation fails, then the "new" throws, and we leave.
+    // No clean-up necessary.
+
+    try
+    {
+        nptrb = new Named("Object B");
+        // If the 2nd allocation fails, then we need to clean up the
+        // first.
+    }
+    catch (...)
+    {
+        delete nptra;
+        throw;  // We cannot handle the exception here; re-throw it
+    }
 }
 
 
